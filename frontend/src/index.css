@@ -193,4 +193,31 @@ summary.list-none::-webkit-details-marker {
   box-shadow: inset 0 0 10px rgba(100, 110, 87, 0.05);
 }
 
+/* Custom transitions and animations */
+@utility animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@utility animate-slideInRight {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
 

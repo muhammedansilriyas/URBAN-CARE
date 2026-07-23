@@ -15,6 +15,12 @@ const Navbar = () => {
   const [appointments, setAppointments] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile drawer when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const fetchAppointments = async () => {
     if (!isAuthenticated) {
@@ -81,8 +87,8 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant shadow-sm">
       <div className="max-w-screen-2xl mx-auto px-6 xl:px-margin-desktop h-20 flex justify-between items-center w-full">
         <div className="flex items-center gap-4 lg:gap-6 xl:gap-8">
-          <Link to="/" className="font-headline-md text-headline-md font-extrabold text-primary select-none shrink-0 flex items-center gap-2.5">
-            <img src="/favicon.svg" alt="Urban Care Logo" className="w-9 h-9 object-contain" />
+          <Link to="/" className="font-headline-md text-headline-sm sm:text-headline-md font-extrabold text-primary select-none shrink-0 flex items-center gap-2">
+            <img src="/favicon.svg" alt="Urban Care Logo" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
             <span>Urban Patient Care</span>
           </Link>
           <nav className="hidden md:flex items-center gap-4 lg:gap-5 xl:gap-8">
@@ -94,13 +100,13 @@ const Navbar = () => {
           </nav>
         </div>
         
-        <div className="flex items-center gap-4 xl:gap-6">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 xl:gap-6">
+          <div className="flex items-center gap-2 sm:gap-3">
             {isAuthenticated && (
               <div className="relative notifications-container">
                 <button 
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="material-symbols-outlined text-secondary hover:text-primary cursor-pointer transition-all flex items-center justify-center relative p-1 rounded-full hover:bg-surface-container-low outline-none"
+                  className="material-symbols-outlined text-secondary hover:text-primary cursor-pointer transition-all flex items-center justify-center relative p-1.5 rounded-full hover:bg-surface-container-low outline-none"
                 >
                   notifications
                   {appointments.length > 0 && (
@@ -156,9 +162,19 @@ const Navbar = () => {
                 )}
               </div>
             )}
+
+            {/* Hamburger button for mobile devices */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden material-symbols-outlined text-secondary hover:text-primary cursor-pointer transition-all flex items-center justify-center p-1.5 rounded-full hover:bg-surface-container-low outline-none"
+              aria-label="Open menu"
+            >
+              menu
+            </button>
           </div>
 
-          <div className="flex items-center gap-4 border-l pl-4 border-outline-variant/60">
+          {/* Desktop Auth Section */}
+          <div className="hidden md:flex items-center gap-4 border-l pl-4 border-outline-variant/60">
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
                 <Link to="/profile" className="flex items-center gap-2 text-secondary hover:text-primary transition-all group" title="View Profile">
@@ -184,6 +200,119 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* MOBILE DRAWER */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex justify-end">
+          {/* Backdrop */}
+          <div 
+            onClick={() => setMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity duration-300 animate-fadeIn"
+          ></div>
+          
+          {/* Drawer content */}
+          <div className="relative w-4/5 max-w-[300px] h-full bg-surface-container-lowest border-l border-outline-variant shadow-2xl p-6 flex flex-col justify-between z-50 animate-slideInRight">
+            <div>
+              {/* Header */}
+              <div className="flex justify-between items-center pb-4 border-b border-outline-variant/60">
+                <Link to="/" className="font-headline-sm text-headline-sm font-extrabold text-primary flex items-center gap-2">
+                  <img src="/favicon.svg" alt="Urban Care Logo" className="w-8 h-8 object-contain" />
+                  <span>Urban Care</span>
+                </Link>
+                <button 
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="material-symbols-outlined text-secondary hover:text-primary cursor-pointer p-1 rounded-full hover:bg-surface-container-low transition-colors"
+                >
+                  close
+                </button>
+              </div>
+
+              {/* Navigation Links */}
+              <nav className="flex flex-col gap-2 mt-6">
+                <Link 
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-md text-label-md transition-all ${
+                    isActive('/') ? 'bg-primary-container text-primary font-bold' : 'text-secondary hover:bg-surface-container-low hover:text-primary'
+                  }`} 
+                  to="/"
+                >
+                  <span className="material-symbols-outlined text-lg">home</span>
+                  <span>Home</span>
+                </Link>
+                <Link 
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-md text-label-md transition-all ${
+                    isActive('/departments') ? 'bg-primary-container text-primary font-bold' : 'text-secondary hover:bg-surface-container-low hover:text-primary'
+                  }`} 
+                  to="/departments"
+                >
+                  <span className="material-symbols-outlined text-lg">medical_services</span>
+                  <span>Departments</span>
+                </Link>
+                <Link 
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-md text-label-md transition-all ${
+                    isActive('/doctors') ? 'bg-primary-container text-primary font-bold' : 'text-secondary hover:bg-surface-container-low hover:text-primary'
+                  }`} 
+                  to="/doctors"
+                >
+                  <span className="material-symbols-outlined text-lg">group</span>
+                  <span>Doctors</span>
+                </Link>
+                <Link 
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-md text-label-md transition-all ${
+                    isActive('/book-appointment') ? 'bg-primary-container text-primary font-bold' : 'text-secondary hover:bg-surface-container-low hover:text-primary'
+                  }`} 
+                  to="/book-appointment"
+                >
+                  <span className="material-symbols-outlined text-lg">calendar_month</span>
+                  <span>Appointments</span>
+                </Link>
+                <Link 
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-label-md text-label-md transition-all ${
+                    isActive('/contact') ? 'bg-primary-container text-primary font-bold' : 'text-secondary hover:bg-surface-container-low hover:text-primary'
+                  }`} 
+                  to="/contact"
+                >
+                  <span className="material-symbols-outlined text-lg">mail</span>
+                  <span>Inquiries</span>
+                </Link>
+              </nav>
+            </div>
+
+            {/* Footer / Auth */}
+            <div className="pt-4 border-t border-outline-variant/60">
+              {isAuthenticated ? (
+                <div className="space-y-4">
+                  <Link 
+                    to="/profile" 
+                    className="flex items-center gap-3 p-3 bg-surface-container-low hover:bg-surface-container-high rounded-xl border border-outline-variant/40 transition-all group"
+                  >
+                    <FaUserCircle className="text-3xl text-secondary group-hover:text-primary transition-colors" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-xs text-on-surface truncate">{user?.name}</p>
+                      <p className="text-[10px] text-on-surface-variant truncate">{user?.email}</p>
+                    </div>
+                    <span className="material-symbols-outlined text-secondary text-sm">chevron_right</span>
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center gap-2 py-3 border border-rose-200 text-rose-600 hover:bg-rose-50 rounded-xl transition-all font-bold text-xs cursor-pointer"
+                  >
+                    <FaSignOutAlt />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              ) : (
+                <Link 
+                  to="/login" 
+                  className="w-full flex items-center justify-center py-3 bg-primary text-on-primary rounded-xl font-bold text-xs transition-all hover:opacity-90 shadow-sm"
+                >
+                  Login / Sign Up
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       {/* DETAILED BOOKING MODAL */}
       {selectedAppointment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
