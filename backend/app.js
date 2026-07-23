@@ -20,6 +20,9 @@ import { requestLogger } from './middleware/logMiddleware.js';
 
 const app = express();
 
+// Trust proxy for reverse proxy environments like Render
+app.set('trust proxy', 1);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -37,7 +40,7 @@ app.use(cors({
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 100 : 10000, // Relaxed limit in development
+  max: process.env.NODE_ENV === 'production' ? 1500 : 10000, // Relaxed limit in development
   message: { message: 'Too many requests from this IP, please try again after 15 minutes' },
   standardHeaders: true,
   legacyHeaders: false,

@@ -111,7 +111,7 @@ const Profile = () => {
       if (activeTab === 'appointments') {
         fetchAppointments();
       }
-    }, 5000);
+    }, 30000);
 
     return () => {
       window.removeEventListener('appointmentBooked', handleRefresh);

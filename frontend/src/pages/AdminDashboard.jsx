@@ -157,7 +157,7 @@ const AdminDashboard = () => {
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 5000);
+    }, 30000);
 
     return () => clearInterval(intervalId);
   }, [token]);
